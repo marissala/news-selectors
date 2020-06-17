@@ -9,7 +9,7 @@
 #cd D:/Osobiste/GitHub/News_Selector
 
 # M: added my own path
-cd app@gpu-instance-nlp-vm:~/clustering/News_Clustering/news-selectors
+#cd app@gpu-instance-nlp-vm:~/clustering/News_Clustering/news-selectors
 
 scrapy runspider scrapy/scraper.py -a domain="gazeta" -a ranges_start="1,1,1,1" -a ranges_end="6,4,6,3" -t json --nolog -o - > data/daily_articles/page_Gazeta_daily.json
 scrapy runspider scrapy/scraper.py -a domain="rmf" -a ranges_start="1" -a ranges_end="16" -t json --nolog -o - > data/daily_articles/page_RMF_daily.json
