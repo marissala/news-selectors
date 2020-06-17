@@ -1,0 +1,6 @@
+scrapy
+w3lib
+lxml
+scipy
+numpy
+sklearn
