@@ -3,13 +3,13 @@
 # Path should be changed
 #PATH='/home/jkubajek/anaconda3/bin:/home/jkubajek/anaconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'; export PATH
 
-setx path "%path%;C:\Program Files\CodeBlocks\MinGW\bin\ "
+#setx path "%path%;C:\Program Files\CodeBlocks\MinGW\bin\ "
 #setx path "%path%;c:\Program Files (x86)\Mozilla Firefox\ "
 # When running on Linux path
 #cd D:/Osobiste/GitHub/News_Selector
 
 # M: added my own path
-#cd C:/Users/maris/Documents/Sentinel/News_Selector
+cd app@gpu-instance-nlp-vm:~/clustering/News_Clustering/news-selectors
 
 scrapy runspider scrapy/scraper.py -a domain="gazeta" -a ranges_start="1,1,1,1" -a ranges_end="6,4,6,3" -t json --nolog -o - > data/daily_articles/page_Gazeta_daily.json
 scrapy runspider scrapy/scraper.py -a domain="rmf" -a ranges_start="1" -a ranges_end="16" -t json --nolog -o - > data/daily_articles/page_RMF_daily.json
