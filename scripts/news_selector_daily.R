@@ -24,7 +24,7 @@ v_min_lambda_daily <- 10
 
 # Loading functions
 # Setting main directory
-working_dir <- "/home/app/clustering/News_Clustering"#"D:/Osobiste/GitHub/"
+working_dir <- "/home/app/clustering/News_Clustering/"#"D:/Osobiste/GitHub/"
 
 # Sourcing R code
 source(paste0(working_dir, "news-selectors/scripts/dunning_functions.R"), encoding = "UTF8")

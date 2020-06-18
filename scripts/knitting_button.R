@@ -7,7 +7,7 @@ library(lubridate)
 library(magrittr)
 library(mailR)
 
-working_dir <- "/home/app/clustering/News_Clustering" #"D:/Osobiste/GitHub/"
+working_dir <- "/home/app/clustering/News_Clustering/" #"D:/Osobiste/GitHub/"
 # ###################################################################
 # Generacja raportow
 # ###################################################################
