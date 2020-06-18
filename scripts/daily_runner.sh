@@ -6,7 +6,7 @@
 #setx path "%path%;C:\Program Files\CodeBlocks\MinGW\bin\ "
 #setx path "%path%;c:\Program Files (x86)\Mozilla Firefox\ "
 # When running on Linux path
-#cd D:/Osobiste/GitHub/News_Selector
+cd /home/app/clustering/News_Clustering #cd D:/Osobiste/GitHub/News_Selector
 
 # M: added my own path
 #cd app@gpu-instance-nlp-vm:~/clustering/News_Clustering/news-selectors

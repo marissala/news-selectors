@@ -4,6 +4,7 @@
 library(tibble)
 library(rjson)
 library(xml2)
+devtools::install_github("juliasilge/tidytext")
 library(tidytext)
 library(tokenizers)
 library(tidyr)
@@ -23,33 +24,33 @@ v_min_lambda_daily <- 10
 
 # Loading functions
 # Setting main directory
-working_dir <- "D:/Osobiste/GitHub/"
+working_dir <- "/home/app/clustering/News_Clustering"#"D:/Osobiste/GitHub/"
 
 # Sourcing R code
-source(paste0(working_dir, "News_Selector/scripts/dunning_functions.R"), encoding = "UTF8")
-source(paste0(working_dir, "News_Selector/scripts/text_cleaning_functions.R"), encoding = "UTF8")
-source(paste0(working_dir, "News_Selector/scripts/topic_selection_functions.R"), encoding = "UTF8")
+source(paste0(working_dir, "news-selectors/scripts/dunning_functions.R"), encoding = "UTF8")
+source(paste0(working_dir, "news-selectors/scripts/text_cleaning_functions.R"), encoding = "UTF8")
+source(paste0(working_dir, "news-selectors/scripts/topic_selection_functions.R"), encoding = "UTF8")
 
 # Sourcing Python code
-source_python(paste0(working_dir, "News_Selector/scripts/python_functions.py"))
+source_python(paste0(working_dir, "news-selectors/scripts/python_functions.py"))
 
 # Stop Words
-source(paste0(working_dir, "News_Selector/scripts/PL_stop_words.R"), encoding = "UTF8")
+source(paste0(working_dir, "news-selectors/scripts/PL_stop_words.R"), encoding = "UTF8")
 # ###################################################################
 # Load files
 # ###################################################################
-DF_1 <- fromJSON(file = paste0(working_dir, "News_Selector/data/daily_articles/page_RMF_daily.json")) %>% clean_RMF(.)
-DF_2 <- fromJSON(file = paste0(working_dir, "News_Selector/data/daily_articles/page_Gazeta_daily.json")) %>% clean_Gazeta(.)
-DF_3 <- fromJSON(file = paste0(working_dir, "News_Selector/data/daily_articles/page_Interia_daily.json")) %>% clean_Interia(.)
-# DF_4 <- fromJSON(file = paste0(working_dir, "News_Selector/data/daily_articles/page_Dziennik_daily.json")) %>% clean_Dziennik(.)
-DF_5 <- fromJSON(file = paste0(working_dir, "News_Selector/data/daily_articles/page_RadioZET_daily.json")) %>% clean_RadioZET(.)
-DF_6 <- fromJSON(file = paste0(working_dir, "News_Selector/data/daily_articles/page_PAP_daily.json")) %>% clean_PAP(.)
-DF_7 <- fromJSON(file = paste0(working_dir, "News_Selector/data/daily_articles/page_TVN24_daily.json")) %>% clean_TVN24(.)
-DF_8 <- fromJSON(file = paste0(working_dir, "News_Selector/data/daily_articles/page_TVN24bis_daily.json")) %>% clean_TVN24bis(.)
-DF_9 <- fromJSON(file = paste0(working_dir, "News_Selector/data/daily_articles/page_TVP_INFO_daily.json")) %>% clean_TVP_INFO(.)
-DF_10 <- fromJSON(file = paste0(working_dir, "News_Selector/data/daily_articles/page_Polskie_Radio_daily.json")) %>% clean_Polskie_Radio(.)
-DF_11 <- fromJSON(file = paste0(working_dir, "News_Selector/data/daily_articles/page_Polsat_News_daily.json")) %>% clean_Polsat_News(.)
-DF_12 <- fromJSON(file = paste0(working_dir, "News_Selector/data/daily_articles/page_Wprost_daily.json")) %>% clean_Wprost(.)
+DF_1 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_RMF_daily.json")) %>% clean_RMF(.)
+DF_2 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_Gazeta_daily.json")) %>% clean_Gazeta(.)
+DF_3 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_Interia_daily.json")) %>% clean_Interia(.)
+# DF_4 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_Dziennik_daily.json")) %>% clean_Dziennik(.)
+DF_5 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_RadioZET_daily.json")) %>% clean_RadioZET(.)
+DF_6 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_PAP_daily.json")) %>% clean_PAP(.)
+DF_7 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_TVN24_daily.json")) %>% clean_TVN24(.)
+DF_8 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_TVN24bis_daily.json")) %>% clean_TVN24bis(.)
+DF_9 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_TVP_INFO_daily.json")) %>% clean_TVP_INFO(.)
+DF_10 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_Polskie_Radio_daily.json")) %>% clean_Polskie_Radio(.)
+DF_11 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_Polsat_News_daily.json")) %>% clean_Polsat_News(.)
+DF_12 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_Wprost_daily.json")) %>% clean_Wprost(.)
 
 # Meeging all sites
 DF <- DF_1 %>%
@@ -87,13 +88,13 @@ DF <- DF %>%
     mutate(date = date %>% as.character())
 
 # Saving articles 
-save(DF, file = paste0(working_dir, "News_Selector/data/daily_articles/archiv/articles_", v_date, ".RData"))
+save(DF, file = paste0(working_dir, "news-selectors/data/daily_articles/archiv/articles_", v_date, ".RData"))
 
 
 # ###################################################################
 # Load grammar dictionary
 # ###################################################################
-load(paste0(working_dir, "News_Selector/data/grammar_data.RData"))
+load(paste0(working_dir, "news-selectors/data/grammar_data.RData"))
 
 gc(reset = T)
 # ###################################################################
@@ -148,10 +149,10 @@ gc(reset = T)
 # General statistics needed for Dunning statistic
 # ###################################################################
 # Data Set of dates used in general stats
-used_dates <- read.csv2(paste0(working_dir, "News_Selector/data/Used_dates_in_stats.csv")) %>%
+used_dates <- read.csv2(paste0(working_dir, "news-selectors/data/Used_dates_in_stats.csv")) %>%
     dplyr::select(date)
 # Statistics
-load(paste0(working_dir, "News_Selector/data/General_stats_updated.RData"))
+load(paste0(working_dir, "news-selectors/data/General_stats_updated.RData"))
 
 # Update statistics if date is new
 if (! v_date %in% used_dates$date){
@@ -171,8 +172,8 @@ if (! v_date %in% used_dates$date){
     # Update dates included in general statistics
     used_dates <- bind_rows(used_dates, tibble(date = v_date))
 
-    save(general_stats, file = paste0(working_dir, "News_Selector/data/General_stats_updated.RData"))
-    write.csv2(used_dates, file = paste0(working_dir, "News_Selector/data/Used_dates_in_stats.csv"), row.names = F)
+    save(general_stats, file = paste0(working_dir, "news-selectors/data/General_stats_updated.RData"))
+    write.csv2(used_dates, file = paste0(working_dir, "news-selectors/data/Used_dates_in_stats.csv"), row.names = F)
 }
 
 #####################################################################
@@ -259,6 +260,6 @@ lambda_daily_DF <- calculate_lambda_statistics(articles_unnested, general_stats,
 save(list_topics, 
      words_similarity_matrix, 
      lambda_daily_DF, 
-     file = paste0(working_dir, "News_Selector/data/topics/daily_topics_list.RData"))
+     file = paste0(working_dir, "news-selectors/data/topics/daily_topics_list.RData"))
 
 
