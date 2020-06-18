@@ -92,8 +92,9 @@ DF <- DF %>%
     filter(date == v_date) %>%
     mutate(date = date %>% as.character())
 
-# Saving articles 
-save(DF, file = paste0(working_dir, 'news-selectors/data/daily_articles/archiv/articles_', v_date, '.RData'))
+# Saving articles
+#save(DF, file = paste0(working_dir, 'news-selectors/data/daily_articles/archiv/articles_', v_date, '.RData'))
+
 """
 
 # ###################################################################
