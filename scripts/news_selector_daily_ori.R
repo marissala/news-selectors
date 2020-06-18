@@ -36,10 +36,66 @@ source_python(paste0(working_dir, "news-selectors/scripts/python_functions.py"))
 
 # Stop Words
 source(paste0(working_dir, "news-selectors/scripts/PL_stop_words.R"), encoding = "UTF8")
+# ###################################################################
+# Load files
+# ###################################################################
+"""
+This whole area 
+(1) doesn't work since the scraper won't create actual files
+(2) there's the DF file that I can get access to so might as well load that as data here
 
-#### LOAD DATA
-load(paste0(working_dir, 'news-selectors/data/daily_articles/archiv/articles_2019-07-08.RData'))
-####
+DF_1 <- fromJSON(file = paste0(working_dir, 'news-selectors/data/daily_articles/page_RMF_daily.json')) %>% clean_RMF(.)
+DF_2 <- fromJSON(file = paste0(working_dir, 'news-selectors/data/daily_articles/page_Gazeta_daily.json')) %>% clean_Gazeta(.)
+DF_3 <- fromJSON(file = paste0(working_dir, 'news-selectors/data/daily_articles/page_Interia_daily.json')) %>% clean_Interia(.)
+# DF_4 <- fromJSON(file = paste0(working_dir, 'news-selectors/data/daily_articles/page_Dziennik_daily.json')) %>% clean_Dziennik(.)
+DF_5 <- fromJSON(file = paste0(working_dir, 'news-selectors/data/daily_articles/page_RadioZET_daily.json')) %>% clean_RadioZET(.)
+DF_6 <- fromJSON(file = paste0(working_dir, 'news-selectors/data/daily_articles/page_PAP_daily.json')) %>% clean_PAP(.)
+DF_7 <- fromJSON(file = paste0(working_dir, 'news-selectors/data/daily_articles/page_TVN24_daily.json')) %>% clean_TVN24(.)
+DF_8 <- fromJSON(file = paste0(working_dir, 'news-selectors/data/daily_articles/page_TVN24bis_daily.json')) %>% clean_TVN24bis(.)
+DF_9 <- fromJSON(file = paste0(working_dir, 'news-selectors/data/daily_articles/page_TVP_INFO_daily.json')) %>% clean_TVP_INFO(.)
+DF_10 <- fromJSON(file = paste0(working_dir, 'news-selectors/data/daily_articles/page_Polskie_Radio_daily.json')) %>% clean_Polskie_Radio(.)
+DF_11 <- fromJSON(file = paste0(working_dir, 'news-selectors/data/daily_articles/page_Polsat_News_daily.json')) %>% clean_Polsat_News(.)
+DF_12 <- fromJSON(file = paste0(working_dir, 'news-selectors/data/daily_articles/page_Wprost_daily.json')) %>% clean_Wprost(.)
+
+# Meeging all sites
+DF <- DF_1 %>%
+    dplyr::select(id, date, time, site, url, text) %>%
+    union_all(DF_2 %>%
+                  dplyr::select(id, date, time, site, url, text)) %>%
+    union_all(DF_3 %>%
+                  dplyr::select(id, date, time, site, url, text)) %>%
+    # union_all(DF_4 %>%
+    #               dplyr::select(id, date, time, site, url, text)) %>%
+    union_all(DF_5 %>%
+                  dplyr::select(id, date, time, site, url, text)) %>%
+    union_all(DF_6 %>%
+                  dplyr::select(id, date, time, site, url, text)) %>%
+    union_all(DF_7 %>%
+                  dplyr::select(id, date, time, site, url, text)) %>%
+    union_all(DF_8 %>%
+                  dplyr::select(id, date, time, site, url, text))%>%
+    union_all(DF_9 %>%
+                  dplyr::select(id, date, time, site, url, text))%>%
+    union_all(DF_10 %>%
+                  dplyr::select(id, date, time, site, url, text))%>%
+    union_all(DF_11 %>%
+                  dplyr::select(id, date, time, site, url, text))%>%
+    union_all(DF_12 %>%
+                  dplyr::select(id, date, time, site, url, text))
+rm(DF_1, DF_2, DF_3, DF_5, DF_6, DF_7, DF_8, DF_9, DF_10, DF_11, DF_12)
+
+# Setting as date to analyse yesterday
+v_date <- Sys.time() %>% ymd_hms() %>% as.Date() - 1
+v_date <- v_date %>% as.character()
+
+DF <- DF %>%
+    filter(date == v_date) %>%
+    mutate(date = date %>% as.character())
+
+# Saving articles
+#save(DF, file = paste0(working_dir, 'news-selectors/data/daily_articles/archiv/articles_', v_date, '.RData'))
+
+"""
 
 # ###################################################################
 # Load grammar dictionary
