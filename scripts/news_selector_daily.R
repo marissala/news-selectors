@@ -39,6 +39,11 @@ source(paste0(working_dir, "news-selectors/scripts/PL_stop_words.R"), encoding =
 # ###################################################################
 # Load files
 # ###################################################################
+"""
+This whole area 
+(1) doesn't work since the scraper won't create actual files
+(2) there's the DF file that I can get access to so might as well load that as data here
+
 DF_1 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_RMF_daily.json")) %>% clean_RMF(.)
 DF_2 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_Gazeta_daily.json")) %>% clean_Gazeta(.)
 DF_3 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_Interia_daily.json")) %>% clean_Interia(.)
@@ -89,7 +94,7 @@ DF <- DF %>%
 
 # Saving articles 
 save(DF, file = paste0(working_dir, "news-selectors/data/daily_articles/archiv/articles_", v_date, ".RData"))
-
+"""
 
 # ###################################################################
 # Load grammar dictionary
