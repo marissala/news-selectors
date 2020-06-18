@@ -12,19 +12,20 @@ Created on Wed Feb  6 11:16:12 2019
 Takes as input the clustering model, the clusters assignments (in list form) that were predicted, and the 
 tfidf_matrix that was clustered.
 """
+
 def success(model, clusters, matrix):
     import os
     import pandas as pd
     
-    os.chdir("/Users/parkerglenn/Desktop/DataScience/Article_Clustering")
+    #os.chdir("news-selectors")
 
-    df = pd.read_csv("/Users/parkerglenn/Desktop/DataScience/Article_Clustering/csv/all_GOOD_articles.csv")
-    labels_df= pd.read_csv("/Users/parkerglenn/Desktop/DataScience/Article_Clustering/Google_Drive/Article_ClassificationFINAL.csv")
+    df = pd.read_csv("~/Documents/Sentinel/news-selectors/fake_data.csv", sep=";")
+    labels_df= pd.read_csv("~/Documents/Sentinel/news-selectors/fake_labels.csv", sep=";")
     
     #Deletes unnecessary columns
-    df = df.drop(df.columns[:12], axis = 1)
+    #df = df.drop(df.columns[:12], axis = 1)
     #Sets manageable range for working data set
-    new_df = df[5000:6000]
+    new_df = df #[5000:6000]
     #Gets info in list form to be later called in kmeans part
     
     corpus = []
@@ -32,16 +33,21 @@ def success(model, clusters, matrix):
         corpus.append(text)
     
     titles = []
-    for title in new_df["title"]:
+    #Lets have publication and not title
+    for title in new_df["publication"]:
+    #for title in new_df["title"]:
         titles.append(str(title))
     #labels_df starts at df[5000] so we're good on the matching of labels to content
     events = []
-    for event in labels_df["Event"][:1000]:
+    for event in labels_df["event"][:1000]:
         events.append(str(event))
 
 
-    articles = {"title": titles, "date": new_df["date"], "cluster": clusters, "content": new_df["content"], "event": events[:len(clusters)]}
-    frame = pd.DataFrame(articles, index = [clusters] , columns = ['title', 'date', 'cluster', 'content', "event"])
+    #articles = {"title": titles, "date": new_df["date"], "cluster": clusters, "content": new_df["content"], "event": events[:len(clusters)]}
+    #frame = pd.DataFrame(articles, index = [clusters] , columns = ['title', 'date', 'cluster', 'content', "event"])
+
+    articles = {"publication": titles, "date": new_df["date"], "cluster": clusters, "content": new_df["content"], "event": events[:len(clusters)]}
+    frame = pd.DataFrame(articles, index = [clusters] , columns = ['publication', 'date', 'cluster', 'content', "event"])
 
     """
     BELOW THIS CREATES DICT OF CLUSTERS AND PREDOMINANT EVENT
@@ -238,3 +244,9 @@ def success(model, clusters, matrix):
     #700_no_ngrams: 0.06251251395097632
     #350_3_ngrams: 0.04969413068018369
     #300_3_ngrams: 0.04857286650243616
+
+
+
+
+
+
