@@ -44,18 +44,18 @@ This whole area
 (1) doesn't work since the scraper won't create actual files
 (2) there's the DF file that I can get access to so might as well load that as data here
 
-DF_1 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_RMF_daily.json")) %>% clean_RMF(.)
-DF_2 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_Gazeta_daily.json")) %>% clean_Gazeta(.)
-DF_3 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_Interia_daily.json")) %>% clean_Interia(.)
-# DF_4 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_Dziennik_daily.json")) %>% clean_Dziennik(.)
-DF_5 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_RadioZET_daily.json")) %>% clean_RadioZET(.)
-DF_6 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_PAP_daily.json")) %>% clean_PAP(.)
-DF_7 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_TVN24_daily.json")) %>% clean_TVN24(.)
-DF_8 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_TVN24bis_daily.json")) %>% clean_TVN24bis(.)
-DF_9 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_TVP_INFO_daily.json")) %>% clean_TVP_INFO(.)
-DF_10 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_Polskie_Radio_daily.json")) %>% clean_Polskie_Radio(.)
-DF_11 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_Polsat_News_daily.json")) %>% clean_Polsat_News(.)
-DF_12 <- fromJSON(file = paste0(working_dir, "news-selectors/data/daily_articles/page_Wprost_daily.json")) %>% clean_Wprost(.)
+DF_1 <- fromJSON(file = paste0(working_dir, 'news-selectors/data/daily_articles/page_RMF_daily.json')) %>% clean_RMF(.)
+DF_2 <- fromJSON(file = paste0(working_dir, 'news-selectors/data/daily_articles/page_Gazeta_daily.json')) %>% clean_Gazeta(.)
+DF_3 <- fromJSON(file = paste0(working_dir, 'news-selectors/data/daily_articles/page_Interia_daily.json')) %>% clean_Interia(.)
+# DF_4 <- fromJSON(file = paste0(working_dir, 'news-selectors/data/daily_articles/page_Dziennik_daily.json')) %>% clean_Dziennik(.)
+DF_5 <- fromJSON(file = paste0(working_dir, 'news-selectors/data/daily_articles/page_RadioZET_daily.json')) %>% clean_RadioZET(.)
+DF_6 <- fromJSON(file = paste0(working_dir, 'news-selectors/data/daily_articles/page_PAP_daily.json')) %>% clean_PAP(.)
+DF_7 <- fromJSON(file = paste0(working_dir, 'news-selectors/data/daily_articles/page_TVN24_daily.json')) %>% clean_TVN24(.)
+DF_8 <- fromJSON(file = paste0(working_dir, 'news-selectors/data/daily_articles/page_TVN24bis_daily.json')) %>% clean_TVN24bis(.)
+DF_9 <- fromJSON(file = paste0(working_dir, 'news-selectors/data/daily_articles/page_TVP_INFO_daily.json')) %>% clean_TVP_INFO(.)
+DF_10 <- fromJSON(file = paste0(working_dir, 'news-selectors/data/daily_articles/page_Polskie_Radio_daily.json')) %>% clean_Polskie_Radio(.)
+DF_11 <- fromJSON(file = paste0(working_dir, 'news-selectors/data/daily_articles/page_Polsat_News_daily.json')) %>% clean_Polsat_News(.)
+DF_12 <- fromJSON(file = paste0(working_dir, 'news-selectors/data/daily_articles/page_Wprost_daily.json')) %>% clean_Wprost(.)
 
 # Meeging all sites
 DF <- DF_1 %>%
@@ -93,7 +93,7 @@ DF <- DF %>%
     mutate(date = date %>% as.character())
 
 # Saving articles 
-save(DF, file = paste0(working_dir, "news-selectors/data/daily_articles/archiv/articles_", v_date, ".RData"))
+save(DF, file = paste0(working_dir, 'news-selectors/data/daily_articles/archiv/articles_', v_date, '.RData'))
 """
 
 # ###################################################################
