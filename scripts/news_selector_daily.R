@@ -4,7 +4,7 @@
 library(tibble)
 library(rjson)
 library(xml2)
-install.packages("tidytext", repos='http://cran.us.r-project.org', dep = T)
+#install.packages("tidytext", repos='http://cran.us.r-project.org', dep = T)
 library(tidytext)
 library(tokenizers)
 library(tidyr)
