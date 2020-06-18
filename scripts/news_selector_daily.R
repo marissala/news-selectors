@@ -105,28 +105,6 @@ used_dates <- read.csv2(paste0(working_dir, "news-selectors/data/Used_dates_in_s
 # Statistics
 load(paste0(working_dir, "news-selectors/data/General_stats_updated.RData"))
 
-# Update statistics if date is new
-if (! v_date %in% used_dates$date){
-
-    general_stats <- general_stats %>%
-        dplyr::select(word, counts_general) %>%
-        union_all(articles_unnested %>%
-                      group_by(word) %>%
-                      summarise(counts_general = n()) %>%
-                      ungroup()) %>%
-        group_by(word) %>%
-        summarise(counts_general = sum(counts_general)) %>%
-        ungroup() %>%
-        mutate(perc_general = counts_general / sum(counts_general)) %>%
-        dplyr::select(word, perc_general, counts_general)
-    
-    # Update dates included in general statistics
-    used_dates <- bind_rows(used_dates, tibble(date = v_date))
-
-    save(general_stats, file = paste0(working_dir, "news-selectors/data/General_stats_updated.RData"))
-    write.csv2(used_dates, file = paste0(working_dir, "news-selectors/data/Used_dates_in_stats.csv"), row.names = F)
-}
-
 #####################################################################
 # Cluster and summarise with embeddings in Python
 # ###################################################################
