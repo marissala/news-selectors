@@ -5,8 +5,7 @@ install.packages("rmarkdown", repos='http://cran.us.r-project.org')
 library(rmarkdown)
 library(lubridate)
 library(magrittr)
-library(devtools)
-install_github("mailR", "rpremraj")
+install.packages("mailR", repos='http://cran.us.r-project.org', dep = T)
 library(mailR)
 
 working_dir <- "/home/app/clustering/News_Clustering/" #"D:/Osobiste/GitHub/"
