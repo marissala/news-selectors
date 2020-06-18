@@ -28,4 +28,4 @@ scrapy runspider scrapy/scraper.py -a domain="wprost" -a ranges_start="1, 1, 1" 
 
 
 Rscript scripts/news_selector_daily.R
-Rscript scripts/knitting_button.R
+#Rscript scripts/knitting_button.R
