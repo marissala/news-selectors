@@ -8,14 +8,18 @@ library(magrittr)
 #install.packages("mailR", repos='http://cran.us.r-project.org', dep = T)
 #library(mailR)
 
+install.packages("glue")
+library(glue)
+
 working_dir <- "/home/app/clustering/News_Clustering/" #"D:/Osobiste/GitHub/"
+working_dir <- "~/Sentinel/"
 # ###################################################################
 # Generacja raportow
 # ###################################################################
 # Instrukcja - https://www.reddit.com/r/rstats/comments/7rpm5y/what_is_the_best_way_to_automatically_knit_an/
 
 v_date <- Sys.time() %>% ymd_hms() %>% as.Date() - 1
-rmarkdown::render(input = paste0(working_dir, 'news-selectors/scripts/reports/daily_report_html.Rmd'),
+rmarkdown::render(input = paste0(working_dir, 'news-selectors/scripts/reports/daily_report_html_en.Rmd'),
                   output_file = paste0(working_dir, 'news-selectors/data/daily_reports/Raport_dzienny_',v_date, '.html'), 
                   encoding = "UTF8")
 

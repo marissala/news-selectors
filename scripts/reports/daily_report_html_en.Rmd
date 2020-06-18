@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r echo = FALSE}
-working_dir <- "D:/Osobiste/GitHub/"
+working_dir <- "~/Sentinel/"
 
 library(tidyselect)
 library(tokenizers)
@@ -40,9 +40,12 @@ library(knitr)
 library(lexRankr)
 # library(arrangements)
 
-load(paste0(working_dir, "News_Selector/data/topics/daily_topics_list_en.RData"))
+#install.packages("webshot")
+library(webshot)
 
-source(paste0(working_dir, "News_Selector/scripts/topic_selection_functions.R"), encoding = "UTF8")
+load(paste0(working_dir, "news-selectors/data/topics/daily_topics_list_en.RData"))
+
+source(paste0(working_dir, "news-selectors/scripts/topic_selection_functions.R"), encoding = "UTF8")
 
 kexpand <- function(wt, ht, cat) {
   cat(knitr::knit(text = knitr::knit_expand(text = 
