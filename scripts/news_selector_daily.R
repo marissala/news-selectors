@@ -39,6 +39,7 @@ source(paste0(working_dir, "news-selectors/scripts/PL_stop_words.R"), encoding =
 
 #### LOAD DATA
 load(paste0(working_dir, 'news-selectors/data/daily_articles/archiv/articles_2019-07-08.RData'))
+v_date = "2019-07-08"
 ####
 
 # ###################################################################
