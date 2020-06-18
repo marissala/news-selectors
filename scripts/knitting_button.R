@@ -1,7 +1,7 @@
 # ###################################################################
 # Biblioteki
 # ###################################################################
-install.packages("rmarkdown")
+install.packages("rmarkdown", repos='http://cran.us.r-project.org')
 library(rmarkdown)
 library(lubridate)
 library(magrittr)
