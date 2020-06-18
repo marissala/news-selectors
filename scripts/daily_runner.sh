@@ -11,6 +11,8 @@ cd /home/app/clustering/News_Clustering/news-selectors/ #cd D:/Osobiste/GitHub/N
 # M: added my own path
 #cd app@gpu-instance-nlp-vm:~/clustering/News_Clustering/news-selectors
 
+"""
+No need for scraping for now! All is in .RData in achiv
 scrapy runspider scrapy/scraper.py -a domain="gazeta" -a ranges_start="1,1,1,1" -a ranges_end="6,4,6,3" -t json --nolog -o - > data/daily_articles/page_Gazeta_daily.json
 scrapy runspider scrapy/scraper.py -a domain="rmf" -a ranges_start="1" -a ranges_end="16" -t json --nolog -o - > data/daily_articles/page_RMF_daily.json
 scrapy runspider scrapy/scraper.py -a domain="tvn24" -a ranges_start="1" -a ranges_end="20" -t json --nolog -o - > data/daily_articles/page_TVN24_daily.json
@@ -23,6 +25,8 @@ scrapy runspider scrapy/scraper.py -a domain="tvp_info" -a ranges_start="1, 1" -
 scrapy runspider scrapy/scraper.py -a domain="polsat_news" -a ranges_start="1, 1, 1, 1" -a ranges_end="8,6,5,5" -t json --nolog -o - > data/daily_articles/page_Polsat_News_daily.json
 scrapy runspider scrapy/scraper.py -a domain="polskie_radio" -a ranges_start="1, 1" -a ranges_end="7,6" -t json --nolog -o - > data/daily_articles/page_Polskie_Radio_daily.json
 scrapy runspider scrapy/scraper.py -a domain="wprost" -a ranges_start="1, 1, 1" -a ranges_end="4,5,5" -t json --nolog -o - > data/daily_articles/page_Wprost_daily.json
+"""
 
-#Rscript scripts/news_selector_daily.R
+# Trying out one R script
+Rscript scripts/news_selector_daily.R
 #Rscript scripts/knitting_button.R
