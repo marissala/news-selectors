@@ -24,5 +24,5 @@ scrapy runspider scrapy/scraper.py -a domain="polsat_news" -a ranges_start="1, 1
 scrapy runspider scrapy/scraper.py -a domain="polskie_radio" -a ranges_start="1, 1" -a ranges_end="7,6" -t json --nolog -o - > data/daily_articles/page_Polskie_Radio_daily.json
 scrapy runspider scrapy/scraper.py -a domain="wprost" -a ranges_start="1, 1, 1" -a ranges_end="4,5,5" -t json --nolog -o - > data/daily_articles/page_Wprost_daily.json
 
-Rscript scripts/news_selector_daily.R
+#Rscript scripts/news_selector_daily.R
 #Rscript scripts/knitting_button.R
