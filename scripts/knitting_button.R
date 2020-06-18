@@ -1,7 +1,7 @@
 # ###################################################################
 # Biblioteki
 # ###################################################################
-install_packages("rmarkdown")
+install.packages("rmarkdown")
 library(rmarkdown)
 library(lubridate)
 library(magrittr)
