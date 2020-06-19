@@ -139,6 +139,10 @@ cat('# List of topics')
 cat("  \n")
 cat("  \n")  
 
+# Added code:
+topics = 0
+###
+
 iter <- 1
 for(name in names(list_topics)){
     
@@ -184,9 +188,81 @@ for(name in names(list_topics)){
     #     cat("#####\n")
     # }
     
+    # M: added code: creating a DF where the topic_words are events, append content, title etc
+    topics[iter] = topic_words
+    ###
     
     # if(iter == 3) break
     iter <- iter + 1
 }
+```
+
+Code to extract topic words
+```{r}
+
+# Added code:
+
+topics <- data.frame(event=character(),
+                 content=character(), 
+                 title=character(), 
+                 stringsAsFactors=FALSE)
+
+###
+
+iter <- 1
+for(name in names(list_topics)){
+    
+    topic_words <- list_topics[[name]][["word"]]
+    
+    sen_DF <- data.frame(sentence = list_topics[[name]][["sentences"]],
+                         site_name = list_topics[[name]][["site_name"]],
+                         url = list_topics[[name]][["url"]], stringsAsFactors = F) %>%
+        mutate(site_name = paste0("<a href='", url, "'>", site_name, "</a>")) %>%
+        dplyr::select(-url) %>%
+        rename(Text = sentence,
+               Site = site_name) %>%
+        mutate(Text = gsub('[^(\x20-\xFF)]', '', Text),
+               Site = gsub('[^(\x20-\xFF)]', '', Site))
+    
+    # M: added code: creating a DF where the topic_words are events, append content, title etc
+    #topics[iter] = topic_words
+    x = list_topics[[name]][["word"]]
+    
+    for(j in x){
+        if(length(x) >= 5){
+            topics_list = paste(x[1],x[2],x[3],x[4],x[5], sep = ", ")
+        } else if(length(x) == 4){
+            topics_list = paste(x[1],x[2],x[3],x[4], sep = ", ")
+        } else if(length(x) == 3){
+            topics_list = paste(x[1],x[2],x[3], sep = ", ")
+        } else if(length(x) == 2){
+            topics_list = paste(x[1],x[2], sep = ", ")
+        } else {
+            topics_list = paste(x[1], sep = "-")
+        }
+    }
+    
+    
+    
+    
+    topics_0 = data.frame(
+                   event = topics_list, 
+                    content = list_topics[[name]][["sentences"]][1],
+                       title = list_topics[[name]][["url"]][1])
+    
+    topics <- bind_rows(topics, topics_0)
+
+    ###
+    
+    # if(iter == 3) break
+    iter <- iter + 1
+}
+
+
+topics
+
+#write.csv(topics,"~/Sentinel/news-selectors/results_event_perline.csv", row.names = FALSE, fileEncoding="UTF-8")
+
+
 ```
 
