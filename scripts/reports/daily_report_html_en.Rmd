@@ -95,7 +95,7 @@ This report presents the most important topics in BBC World News publish between
 ```{r echo = FALSE, message=FALSE, fig.width=7, fig.height=8, fig.align = 'center', results='asis'}
 # knitr::opts_current$set(fig.width=7, fig.height=9) 
 quant <- count_quantile(nrow(words_similarity_matrix))
-.wykres <- plot_all_words_correlation(words_similarity_matrix, scale_font = c(14, 10), class_num = 6, min_association = 0.6,
+.wykres <- plot_all_words_correlation(words_similarity_matrix, scale_font = c(14, 10), class_num = 6, min_association = 0.9,
                            lambda_daily_DF)
 
 cat("  \n") 
@@ -228,19 +228,34 @@ for(name in names(list_topics)){
     #topics[iter] = topic_words
     x = list_topics[[name]][["word"]]
     
+    # loops over the list of topics
     for(j in x){
-        if(length(x) >= 5){
-            topics_list = paste(x[1],x[2],x[3],x[4],x[5], sep = ", ")
-        } else if(length(x) == 4){
-            topics_list = paste(x[1],x[2],x[3],x[4], sep = ", ")
-        } else if(length(x) == 3){
-            topics_list = paste(x[1],x[2],x[3], sep = ", ")
-        } else if(length(x) == 2){
-            topics_list = paste(x[1],x[2], sep = ", ")
+        # loops over the items in x and appends the items one by one to a string, multiply by count per word
+        if(length(x) > 5){
+            for(word in x){
+                #topics_list.append(paste(word, ", "))
+                topics_list = append(topics_list, paste(word))
+                #print(topics_list)
+            }
+            
         } else {
-            topics_list = paste(x[1], sep = "-")
+            topics_list = paste(x)
         }
+        
     }
+        
+#        if(length(x) >= 5){
+#            topics_list = paste(x[1],x[2],x[3],x[4],x[5], sep = ", ")
+#        } else if(length(x) == 4){
+#            topics_list = paste(x[1],x[2],x[3],x[4], sep = ", ")
+#        } else if(length(x) == 3){
+#            topics_list = paste(x[1],x[2],x[3], sep = ", ")
+#        } else if(length(x) == 2){
+#            topics_list = paste(x[1],x[2], sep = ", ")
+#        } else {
+#            topics_list = paste(x[1], sep = "-")
+#        }
+#    }
     
     
     
@@ -259,10 +274,179 @@ for(name in names(list_topics)){
 }
 
 
+# Now I have a dataframe that has the topics, id like to add the counts as well? I'll do a dumb thing:
+# I'll repeat the words for as many times as they exist in DF
+DF <- extract_lambda_DF(list_topics)
+
 topics
 
 #write.csv(topics,"~/Sentinel/news-selectors/results_event_perline.csv", row.names = FALSE, fileEncoding="UTF-8")
 
 
+```
+
+Making the repeated column where I multiply topic names - this doesn't work for Python tho, trying again
+```{r}
+
+#Make a df from DF, make the topics be same as names in list_topics
+MF = DF
+MF$Topic = as.factor(MF$Topic)
+levels(MF$Topic) <- as.factor(names(list_topics))
+
+iter <- 1
+topics = data.frame()
+for(name in names(list_topics)){
+    
+    topic_words <- list_topics[[name]][["word"]]
+    
+    sen_DF <- data.frame(sentence = list_topics[[name]][["sentences"]],
+                         site_name = list_topics[[name]][["site_name"]],
+                         url = list_topics[[name]][["url"]], stringsAsFactors = F) %>%
+        mutate(site_name = paste0("<a href='", url, "'>", site_name, "</a>")) %>%
+        dplyr::select(-url) %>%
+        rename(Text = sentence,
+               Site = site_name) %>%
+        mutate(Text = gsub('[^(\x20-\xFF)]', '', Text),
+               Site = gsub('[^(\x20-\xFF)]', '', Site))
+    
+    # M: added code: creating a DF where the topic_words are events, append content, title etc
+    
+    x = list_topics[[name]][["word"]]
+    
+    # repeat the words in the list of x
+    topics_list_repeated_all = NULL#data.frame()
+    topics_list_repeated = NULL
+    for(row in 1:2){
+        for(word in x){
+            d_x = MF %>% filter(Topic == name, Word == word)
+            words_repeated = replicate(d_x$Counts, word)
+            topics_list_repeated[row] = paste(words_repeated, sep = '', collapse = ', ')
+            topics_list_repeated_all = paste(topics_list_repeated_all, topics_list_repeated[row], sep = ', ', collapse = ', ')
+        }
+        #topics_list_repeated_all = paste(topics_list_repeated_all, topics_list_repeated, collapse = ', ')
+    }
+    #topics_list_repeated
+    #topics_list_repeated_all
+    
+    # Adds all the topic words together, separates with a comma
+    topics_list = paste(x, sep = '', collapse = ', ')
+    
+    # NEED TO MULTIPLY HOW MANY TIMES THE WORDS ARE APPENDED - extend x!
+    #topics_list_repeated = paste(words_repeated, sep = '', collapse = ', ')
+    
+    #count_df should have topic number, word, count - then d_x is enough actually
+    
+    topics_0 = data.frame(
+                   event = topics_list, 
+                    content = list_topics[[name]][["sentences"]][1],
+                       title = list_topics[[name]][["url"]][1],
+                    repeated = topics_list_repeated_all)
+    
+    topics <- bind_rows(topics, topics_0)
+
+    ###
+    
+    # if(iter == 3) break
+    iter <- iter + 1
+}
+
+topics
+#write.csv(topics,"~/Sentinel/news-selectors/results_event_perline_repeated.csv", row.names = FALSE, fileEncoding="UTF-8")
+```
+
+
+Replicate event per article? CONTENT HAS TO BE THE **ENTIRE** CONTENT!!
+Currently I can get the sentences where it finds the words from. I do get the id's of the articles so I could get the actual articles as content?
+
+ISSUES: There's just two sentences per event?
+```{r}
+
+#Make a df from DF, make the topics be same as names in list_topics
+MF = DF
+MF$Topic = as.factor(MF$Topic)
+levels(MF$Topic) <- as.factor(names(list_topics))
+
+iter <- 1
+topics = data.frame()
+for(name in names(list_topics)){
+    
+    topic_words <- list_topics[[name]][["word"]]
+    
+    sen_DF <- data.frame(sentence = list_topics[[name]][["sentences"]],
+                         site_name = list_topics[[name]][["site_name"]],
+                         url = list_topics[[name]][["url"]], stringsAsFactors = F) %>%
+        mutate(site_name = paste0("<a href='", url, "'>", site_name, "</a>")) %>%
+        dplyr::select(-url) %>%
+        rename(Text = sentence,
+               Site = site_name) %>%
+        mutate(Text = gsub('[^(\x20-\xFF)]', '', Text),
+               Site = gsub('[^(\x20-\xFF)]', '', Site))
+    
+    # M: added code: creating a DF where the topic_words are events, append content, title etc
+    
+    x = list_topics[[name]][["word"]]
+    
+    # repeat the words in the list of x
+    topics_list_repeated_all = NULL#data.frame()
+    topics_list_repeated = NULL
+    for(row in 1:2){
+        for(word in x){
+            d_x = MF %>% filter(Topic == name, Word == word)
+            theword = word
+            words_repeated = replicate(d_x$Counts, word)
+            topics_list_repeated[row] = paste(words_repeated, sep = '', collapse = ', ')
+            topics_list_repeated_all = paste(topics_list_repeated_all, topics_list_repeated[row], sep = ', ', collapse = ', ')
+        }
+        #topics_list_repeated_all = paste(topics_list_repeated_all, topics_list_repeated, collapse = ', ')
+    }
+    
+    # Adds all the topic words together, separates with a comma
+    topics_list = paste(x, sep = '', collapse = ', ')
+    
+    # NEED TO MULTIPLY HOW MANY TIMES THE WORDS ARE APPENDED - extend x!
+    #topics_list_repeated = paste(words_repeated, sep = '', collapse = ', ')
+    
+    #count_df should have topic number, word, count - then d_x is enough actually
+    
+    ## EXTEND THE CONTENT
+    content = NULL
+    content_all = NULL
+    for(row in 1:length(sen_DF)){
+        content[row] = paste(sen_DF$Text[row])
+        content_all = paste(content_all, content[row], sep = ', ', collapse = ', ')
+    }
+    
+    for(word in x){
+        topics_0 = data.frame(
+                   event = topics_list, 
+                    content = content_all, #list_topics[[name]][["sentences"]][1],
+                       title = list_topics[[name]][["url"]][1],
+                    repeated = topics_list_repeated_all,
+                   lineevent = x,
+                   linerepeated = word)
+    }
+    
+    
+    topics <- bind_rows(topics, topics_0)
+
+    ###
+    
+    # if(iter == 3) break
+    iter <- iter + 1
+}
+
+#topics
+#write.csv(topics,"~/Sentinel/news-selectors/results_event_perline_repeated_linerepeated.csv", row.names = FALSE, fileEncoding="UTF-8")
+
+```
+
+Can I retrieve the whole content? - no, I'd need the scraper to work for that. Rn i can get the sentences though so I'll do that
+```{r}
+load("~/Sentinel/news-selectors/data/daily_articles/archiv/articles_2019-07-08.RData")
+ori_data = DF
+```
+
+```{r}
+DF
 ```
 
