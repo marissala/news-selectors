@@ -11,7 +11,7 @@ from CustomTFIDF import CustomTFIDF
 #########################################################
 
 #df = pd.read_csv("~/Documents/Sentinel/news-selectors/fake_data.csv", sep=";")
-df = pd.read_csv("~/Documents/Sentinel/news-selectors/results_event_perline.csv", sep=",", encoding="utf-8")
+df = pd.read_csv("~/Documents/Sentinel/news-selectors/results_event_perline_repeated_linerepeated.csv", sep=",", encoding="utf-8")
 df['date'] = 0
 new_df = df
 corpus = new_df['content'].tolist()
@@ -26,28 +26,16 @@ matrix= Vectorizer.transform(toks)
 
 # Agglomerative Clustering
 from sklearn.cluster import AgglomerativeClustering
-hac = AgglomerativeClustering(n_clusters=23, affinity = "euclidean")
+hac = AgglomerativeClustering(n_clusters=3, affinity = "euclidean")
 hac.fit(matrix)
 #dense_matrix = hac.fit(matrix).todense()
-
-#from sklearn.externals import joblib
-#Saves the model you just made
-#joblib.dump(hac, '350_euc_HAC_ENTS.pkl')
-#hac = joblib.load("/Users/parkerglenn/Desktop/DataScience/Article_Clustering/HAC_Cluster_Models/350_euc_HAC.pkl")
 
 # Predicted success based on the labels made
 y_pred = hac.labels_.tolist()
 # In the success function there is a place where we read in data and manipulate the "true" labels we compare against
 success(df, df, hac, y_pred, matrix)
 
-
 clusters = y_pred
-
-# df has 'content' --> lets make TFIDF etc
-# labels_df has 'event'
-
-### NEED TO GET 'event' and 'content' and 'title' columns out for the Polish data!
-
 
 import en_core_web_md
 nlp = en_core_web_md.load(disable=['parser','tagger','textcat'])

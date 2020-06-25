@@ -13,11 +13,9 @@ Takes as input the clustering model, the clusters assignments (in list form) tha
 tfidf_matrix that was clustered.
 """
 
-def success(df, labels_df, model, clusters, matrix):
+def success(df, model, clusters, matrix):
     import os
     import pandas as pd
-    
-    #os.chdir("news-selectors")
 
     # Reading these in in the code
     #df = pd.read_csv("~/Documents/Sentinel/news-selectors/fake_data.csv", sep=";")
@@ -27,7 +25,6 @@ def success(df, labels_df, model, clusters, matrix):
     #df = df.drop(df.columns[:12], axis = 1)
     #Sets manageable range for working data set
     new_df = df #[5000:6000]
-    #labels_df = df
     #clusters = y_pred
     #Gets info in list form to be later called in kmeans part
     
@@ -40,7 +37,7 @@ def success(df, labels_df, model, clusters, matrix):
         titles.append(str(title))
     #labels_df starts at df[5000] so we're good on the matching of labels to content
     events = []
-    for event in labels_df["event"][:1000]:
+    for event in df["linerepeated"]:#[:1000]:
         events.append(str(event))
 
 
@@ -169,7 +166,8 @@ def success(df, labels_df, model, clusters, matrix):
         for key in dup_eventsPLUSratio:
             if event == duplicate:    
                 if value != theGood_one or highest == sort[1]:
-                    y_trueDict[key] = "nan"
+                    #y_trueDict[key] = "nan"
+                    print("maris did a thing")
             #If after all that there's still a tie between the top two ratios,
             #(like in hail_caesar_movie where its split 2 and 2 between clusters)
             #its given a "nan" label
@@ -191,7 +189,9 @@ def success(df, labels_df, model, clusters, matrix):
                 find = True
         if find == False:
             #Arbitrary value that's not going to return a match in t score
-            y_true.append("nan")
+            print("maris did a thing")
+            #y_true.append("nan")
+
 
     
     #Gets y_pred, the cluster where each individual event was actually clustered
