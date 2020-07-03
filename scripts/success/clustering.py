@@ -56,14 +56,14 @@ brc = Birch(n_clusters = 20)
 brc.fit(matrix)
 
 y_pred = brc.labels_.tolist()
-success(df, df, brc, y_pred, matrix)
+success(df, brc, y_pred, matrix)
 
 
 #########################################################
 ####################HAC##################################
 #########################################################
 from sklearn.cluster import AgglomerativeClustering
-hac = AgglomerativeClustering(n_clusters=52, affinity = "euclidean")
+hac = AgglomerativeClustering(n_clusters=20, affinity = "euclidean")
 hac.fit(matrix)
 #dense_matrix = tfidf_matrix.todense()
 
@@ -73,7 +73,7 @@ hac.fit(matrix)
 #hac = joblib.load("/Users/parkerglenn/Desktop/DataScience/Article_Clustering/HAC_Cluster_Models/350_euc_HAC.pkl")
 
 y_pred = hac.labels_.tolist()
-success(df, df, hac, y_pred, matrix)
+success(df, hac, y_pred, matrix)
 
 #########################################
 # Inserting some code here from http://brandonrose.org/clustering
@@ -107,7 +107,7 @@ terms = tfidf_vectorizer.get_feature_names()
 from sklearn.metrics.pairwise import cosine_similarity
 dist = 1 - cosine_similarity(tfidf_matrix)
 from sklearn.cluster import KMeans
-num_clusters = 5
+num_clusters = 20
 km = KMeans(n_clusters = num_clusters)
 km.fit(matrix)
 
@@ -118,10 +118,7 @@ y_pred = km.labels_.tolist()
 #km = joblib.load('doc_cluster.pkl')
 clusters = km.labels_.tolist()
 
-success(df, df, km, y_pred, matrix)
-
-
-
+success(df, km, y_pred, matrix)
 
 
 #########################################################
@@ -167,8 +164,6 @@ frame = pd.DataFrame(articles, index = [clusters] , columns = ['title', 'date', 
 frame['cluster'].value_counts()
 
 order_centroids = km.cluster_centers_.argsort()[:, ::-1]
-
-
 
 ########################################################
 ########################################################

@@ -1,3 +1,8 @@
+"""
+Created on Wed Feb  6 11:16:12 2019
+@author: marissala
+"""
+
 import nltk
 import spacy
 import pandas as pd
@@ -6,11 +11,11 @@ from success_algorithm import success
 from NERTokenizer import NERTokenizer
 from CustomTFIDF import CustomTFIDF
 
+
 #########################################################
 #################### HAC ################################
 #########################################################
 
-#df = pd.read_csv("~/Documents/Sentinel/news-selectors/fake_data.csv", sep=";")
 df = pd.read_csv("~/Documents/Sentinel/news-selectors/results_event_perline_repeated_linerepeated.csv", sep=",", encoding="utf-8")
 df['date'] = 0
 new_df = df
@@ -24,6 +29,24 @@ toks = NerTok.transform(corpus)
 Vectorizer = CustomTFIDF(ents_rate = 6.368, person_rate = 2.263, julian = False)
 matrix= Vectorizer.transform(toks)
 
+# Train topic number estimator
+from gensim.test.utils import common_corpus, common_dictionary
+from gensim.models import HdpModel
+hdp = HdpModel(common_corpus, common_dictionary)
+
+# Infer topic distribution
+unseen_document = [(1, 3.), (2, 4)]
+doc_hdp = hdp[unseen_document]
+
+# Print 20 topics with 10 most probable words
+topic_info = hdp.print_topics(num_topics=5, num_words=10)
+
+# Update model with new topics coming in
+hdp.update([[(1, 2)], [(1, 1), (4, 5)]])
+
+# not sure how the updating works so far
+#hdp.update(["hello there"], ["another"])
+
 # Agglomerative Clustering
 from sklearn.cluster import AgglomerativeClustering
 hac = AgglomerativeClustering(n_clusters=3, affinity = "euclidean")
@@ -33,80 +56,6 @@ hac.fit(matrix)
 # Predicted success based on the labels made
 y_pred = hac.labels_.tolist()
 # In the success function there is a place where we read in data and manipulate the "true" labels we compare against
-success(df, df, hac, y_pred, matrix)
+success(df, hac, y_pred, matrix)
 
-clusters = y_pred
-
-import en_core_web_md
-nlp = en_core_web_md.load(disable=['parser','tagger','textcat'])
-
-from spacy.gold import iob_to_biluo
-
-from spacy.attrs import ORTH
-nlp.tokenizer.add_special_case("I'm", [{ORTH: "I'm"}])
-nlp.vocab.add_flag(lambda s: s.lower() in spacy.lang.en.stop_words.STOP_WORDS, spacy.attrs.IS_STOP)
-
-for text in corpus:
-    toks = []
-    iobs = [i.ent_iob_ for i in nlp(text)]
-    print(iobs)
-    #biluos = list(iob_to_biluo(iobs))
-
-
-
-list(iob_to_biluo(['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O']))
-
-
-
-
-
-##########################
-for text in corpus:
-    iobs = [i.ent_iob_ for i in nlp(text)]
-    biluos = list(iob_to_biluo(iobs))
-
-
-
-    new_iobs = []
-    for string in iobs:
-        new_string = string.replace("B", "O")
-        #new_string = string.replace("I", "O")
-            #print("new: ", new_string)
-        new_iobs.append(new_string)
-    new_iobs2 = []
-    for string2 in new_iobs:
-        new_string2 = string2.replace("I", "O")
-        new_iobs2.append(new_string2)
-
-    biluos = list(iob_to_biluo(new_iobs2))
-
-
-nlp = en_core_web_md.load()
-from spacy.attrs import ORTH
-
-
-import spacy
-from spacy.gold import iob_to_biluo
-nlp = spacy.load('en', disable=['parser','tagger','textcat'])
-#nlp.tokenizer.add_special_case("I'm", [{ORTH: "I'm"}])
-#nlp.vocab.add_flag(lambda s: s.lower() in spacy.lang.en.stop_words.STOP_WORDS, spacy.attrs.IS_STOP)
-doc = 'My name is George Washington Singer, and I am one an englishman' #US President Donald Trump has attacked Democrats impeachment investigation'
-print([i.ent_iob_ for i in nlp(doc)])
-iobs = [i.ent_iob_ for i in nlp(doc)]
-iob_to_biluo(iobs)
-
-
-doc = 'President Donald Trump has attached democrats'# impeachment investigation'
-iobs = [i.ent_iob_ for i in nlp(doc)]
-iob_to_biluo(iobs)
-
-doc = "US President Donald Trump has attacked Democrats impeachment investigation" #into his conduct as very unpatriotic"
-print([i.ent_iob_ for i in nlp(doc)])
-
-doc = 'US President Donald Trump has attacked Democrats\' impeachment investigation into his conduct as "very unpatriotic".'
-
-iobs = [i.ent_iob_ for i in nlp(doc)]
-iob_to_biluo(iobs)
-
-for i in iobs:
-    print(len(i))
+#clusters = y_pred

@@ -56,7 +56,7 @@ class NERTokenizer(sklearn.base.TransformerMixin):
         for text in X:
             toks = []
             iobs = [i.ent_iob_ for i in nlp(text)]
-            print(iobs)
+            
             """
             lst = ['B', iobs, 1]
             if find_letter(lst):

@@ -1,10 +1,16 @@
+#install.packages("installr")
+library(installr)
+#updateR()
+# Make sure to update your R to 3.6.3
 # ###################################################################
 # Libraries
 # ###################################################################
-library(tibble)
+library(pacman)
+pacman::p_load(tibble, rjson, xml2, tidytext, tokenizers, tidyr, dplyr, widyr, chron, openxlsx, reticulate, lubridate, stringr)
 library(rjson)
 library(xml2)
-install.packages("tidytext", repos='http://cran.us.r-project.org', dep = T, lib = "/home/app/R/x86_64-pc-linux-gnu-library/3.4")
+#install.packages("tidytext", repos='http://cran.us.r-project.org', dep = T, lib = "/home/app/R/x86_64-pc-linux-gnu-library/3.4")
+#install.packages("tidytext", repos='http://cran.us.r-project.org', dep = T, lib = "C:/Users/maris/Documents/R/win-library/3.6")
 library(tidytext)
 library(tokenizers)
 library(tidyr)
@@ -24,26 +30,38 @@ v_min_lambda_daily <- 10
 
 # Loading functions
 # Setting main directory
-working_dir <- "/home/app/clustering/News_Clustering/"#"D:/Osobiste/GitHub/"
+#working_dir <- "/home/app/clustering/News_Clustering/" #for remote
+working_dir <- "~/Sentinel/" #for local
 
 # Sourcing R code
 source(paste0(working_dir, "news-selectors/scripts/dunning_functions.R"), encoding = "UTF8")
 source(paste0(working_dir, "news-selectors/scripts/text_cleaning_functions.R"), encoding = "UTF8")
 source(paste0(working_dir, "news-selectors/scripts/topic_selection_functions.R"), encoding = "UTF8")
 
-# Sourcing Python code
+# ###################################################################
+# Setting up Python integration
+# ###################################################################
+# Reticulate helps integrate
+library(reticulate)
+# Call the specific Python version with use_python or activate a conda env with use_condaenv
+#path_to_python <- "C:/Users/maris/Anaconda3/envs/SBERT-WK/python"
+#use_python(path_to_python)
+# Using the same conda env as I do for Python
+use_condaenv(condaenv = "SBERT-WK", conda = "/Users/maris/Anaconda3/envs/SBERT-WK", required = TRUE)
+
+#scipy <- import("scipy")
 source_python(paste0(working_dir, "news-selectors/scripts/python_functions.py"))
 
 # Stop Words
 source(paste0(working_dir, "news-selectors/scripts/PL_stop_words.R"), encoding = "UTF8")
 
-#### LOAD DATA
+#### LOAD DATA - this is what the input data has to look like
 load(paste0(working_dir, 'news-selectors/data/daily_articles/archiv/articles_2019-07-08.RData'))
 v_date = "2019-07-08"
 ####
 
 # ###################################################################
-# Load grammar dictionary
+# Load grammar dictionary - check out what this is 
 # ###################################################################
 load(paste0(working_dir, "news-selectors/data/grammar_data.RData"))
 
@@ -53,6 +71,9 @@ gc(reset = T)
 # ###################################################################
 # TO DO:
 # Correct sentence splitting (RMF24 - it's probably hard space)
+
+# Force the "text" to be in UTF-8 to avoid errors in set_lambda_order in python_functions.py
+Encoding(DF$text) <- "UTF-8"
 
 # Selecting sentences that are to be included in analysis
 articles_sentences <- DF %>%
@@ -74,19 +95,25 @@ articles_sentences <- DF %>%
     mutate(characters = nchar(text),
            capital_letters = stringr::str_count(text,"[A-Z]")) %>%
     filter((capital_letters / characters) < 0.35)
-    
-# Unnest sentences
+
+# Un-nest sentences
 articles_unnested <- articles_sentences %>%
     unnest_tokens(word, text, to_lower = F) %>%
     group_by(sentence_id) %>%
     mutate(position = seq(1, n())) %>%
-    ungroup() %>%
-    strip_numeric(., word) %>%
+    ungroup()# %>%
+    strip_numeric(word) %>% #(., word) %>% # commenting this out - removes digits from character string
     filter(!word %in% stop_words_pl) %>%
     left_join(grammar_data, by = c("word" = "tekst")) %>%
     mutate(word = ifelse(is.na(slowo), word, slowo)) %>%
     dplyr::select(-slowo) %>%
     filter(!word %in% stop_words_pl) 
+    
+articles_unnested
+
+### IMPORTANT ERROR ###
+#Warning message:
+#In mask$eval_all_filter(dots, env_filter) : NAs introduced by coercion
 
 # Select minimum number of tokens occurence basing on distribution of data
 data_grouped <-  articles_unnested %>%
@@ -127,8 +154,14 @@ sentences_text <- inputs[[6]]
 # Sending data to Python for clustering and summarisation with the
 # use of dimensions reduction (LSA)
 # The algorithm is to select approximately 5% of the sentences that include 
-# topic tokens (words), but no less than 3 and no more than 10. 
-topics <- cluster_and_summarise(sections_and_articles, filtered_lambda_statistics,
+# topic tokens (words), but no less than 3 and no more than 10.
+
+############### DEBUGGERY ##########################
+
+source_python(paste0(working_dir, "news-selectors/scripts/python_functions.py"))
+
+#topics <- 
+cluster_and_summarise(sections_and_articles, filtered_lambda_statistics,
                                # Clustering
                                min_association=0.25, do_silhouette=TRUE, 
                                singularity_penalty=-0.1,
@@ -140,6 +173,11 @@ topics <- cluster_and_summarise(sections_and_articles, filtered_lambda_statistic
                                min_key_freq=0.25, max_sentence_simil=0.5,
                                section_id="section_id", word_col="word",
                                use_sparse=TRUE)
+### IMPORTANT ERROR ###
+#Error in py_call_impl(callable, dots$args, dots$keywords) : 
+#KeyError: 'ALUFIRE' 
+
+############### DEBUGGERY ##########################
 
 list_topics <- topics[[1]]
 words_similarity_matrix <- topics[[2]]

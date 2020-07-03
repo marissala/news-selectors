@@ -3,6 +3,7 @@
 """
 Created on Wed Feb  6 11:16:12 2019
 @author: parkerglenn
+Modified by marissala
 """
 
 ##############################################################################
@@ -17,16 +18,10 @@ def success(df, model, clusters, matrix):
     import os
     import pandas as pd
 
-    # Reading these in in the code
-    #df = pd.read_csv("~/Documents/Sentinel/news-selectors/fake_data.csv", sep=";")
-    #labels_df= pd.read_csv("~/Documents/Sentinel/news-selectors/fake_labels.csv", sep=";")
-    
     #Deletes unnecessary columns
     #df = df.drop(df.columns[:12], axis = 1)
     #Sets manageable range for working data set
     new_df = df #[5000:6000]
-    #clusters = y_pred
-    #Gets info in list form to be later called in kmeans part
     
     corpus = []
     for text in new_df['content']:
@@ -35,14 +30,13 @@ def success(df, model, clusters, matrix):
     titles = []
     for title in new_df["title"]:
         titles.append(str(title))
-    #labels_df starts at df[5000] so we're good on the matching of labels to content
+
     events = []
-    for event in df["linerepeated"]:#[:1000]:
+    for event in df["linerepeated"]:
         events.append(str(event))
 
 
     articles = {"title": titles, "date": new_df["date"], "cluster": clusters, "content": new_df["content"], "event": events[:len(clusters)]}
-    # Frame doesn't look right?
     frame = pd.DataFrame(articles, index = [clusters] , columns = ['title', 'date', 'cluster', 'content', "event"])
 
     """

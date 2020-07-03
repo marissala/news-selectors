@@ -1,4 +1,6 @@
 import numpy as np
+#!pip install scipy
+import scipy
 import scipy.sparse as sp
 from sklearn.decomposition import TruncatedSVD
 from sklearn.feature_extraction.text import CountVectorizer
@@ -297,9 +299,11 @@ class TopicsSummariser:
 
     def set_lambda_order(self):
         """Selects only statistics for tokens present in vocabulary and adjusts thier order"""
-        tokens = list(self.log_lambda_statistics_df[self.word_col])
+        tokens = list(self.log_lambda_statistics_df["word"])  #[self.word_col])
         values = list(self.log_lambda_statistics_df["lambda"])
         statistics = {token: values[index] for index, token in enumerate(tokens)}
+        #M: added fit to get vocabulary out, not sure if it should start with "self"
+        vectorize_sentences.fit_transform(tokens)
         vocab = self.vectorizer_sentences.vocabulary_
         inv_vocab = {v: k for k, v in vocab.items()}
         ordered_vocabulary = [inv_vocab[i] for i in range(len(inv_vocab))]
@@ -571,7 +575,9 @@ def set_lambda_order(log_lambda_statistics_df, vocabulary):
     statistics = {token: values[index] for index, token in enumerate(tokens)}
     inv_vocab = {v: k for k, v in vocabulary.items()}
     ordered_vocabulary = [inv_vocab[i] for i in range(len(inv_vocab))]
-    ordered_statistics = [statistics[token] for token in ordered_vocabulary]
+    # M: This works better:
+    ordered_statistics = sorted(statistics.items(), key=lambda pair: ordered_vocabulary.index(pair[0]))
+    #ordered_statistics = [statistics[token] for token in ordered_vocabulary]
     log_lambda_statistics = np.array(ordered_statistics)
     log_lambda_statistics.resize(log_lambda_statistics.shape[0], 1)
     return log_lambda_statistics
@@ -669,13 +675,14 @@ def cluster_and_summarise(sections_and_articles, filtered_lambda_statistics,
     :param min_sent_to_lexrank int Minimal number of sentences that are included in LexRank; the true minimal number
     can not be greater than 50% of initial number of sentences.
     """
-
+    print("hi world")
     # Create embeddings
     outputs = create_embeddings(sections_and_articles,
                                 filtered_lambda_statistics,
                                 log_lambda_statistics_df,
                                 pipeline=True,
                                 embedding_size=int(embedding_size))
+    print(outputs)
 
     similarity_matrix = outputs[0]
     # distribution_matrix = outputs[1] 

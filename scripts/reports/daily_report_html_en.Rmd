@@ -442,8 +442,9 @@ for(name in names(list_topics)){
 
 Can I retrieve the whole content? - no, I'd need the scraper to work for that. Rn i can get the sentences though so I'll do that
 ```{r}
-load("~/Sentinel/news-selectors/data/daily_articles/archiv/articles_2019-07-08.RData")
-ori_data = DF
+#load("~/Sentinel/news-selectors/data/daily_articles/archiv/articles_2019-07-08.RData")
+load("~/Sentinel/news-selectors/data/topics/daily_topics_list.RData")
+#ori_data = DF
 ```
 
 ```{r}
